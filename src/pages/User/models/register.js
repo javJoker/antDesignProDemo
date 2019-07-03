@@ -1,12 +1,14 @@
 import { fakeRegister } from '@/services/api';
 import { setAuthority } from '@/utils/authority';
 import { reloadAuthorized } from '@/utils/Authorized';
+import router from 'umi/router';
+import { message } from 'antd';
 
 export default {
   namespace: 'register',
 
   state: {
-    status: undefined,
+    code: undefined,
   },
 
   effects: {
@@ -16,6 +18,16 @@ export default {
         type: 'registerHandle',
         payload: response,
       });
+
+      if (response.code === 1){
+        // 页面跳转成功页
+        router.push({
+          pathname: '/user/login',
+        });
+        message.info("注册成功,请登录！");
+      } else {
+        message.error(response);
+      }
     },
   },
 
@@ -25,7 +37,8 @@ export default {
       reloadAuthorized();
       return {
         ...state,
-        status: payload.status,
+        code: payload.code,
+        msg: payload.msg,
       };
     },
   },

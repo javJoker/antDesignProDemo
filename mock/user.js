@@ -72,33 +72,33 @@ export default {
       address: 'Sidney No. 1 Lake Park',
     },
   ],
+
   'POST /api/login/account': (req, res) => {
     const { password, userName, type } = req.body;
     if (password === 'admin' && userName === 'admin') {
       res.send({
-        status: 'ok',
-        type,
+        code: 1,
+        msg:'登录成功',
+
+        // status: 'ok',
+        // type,
         currentAuthority: 'admin',
       });
       return;
     }
-    if (password === 'user' && userName === 'user') {
-      res.send({
-        status: 'ok',
-        type,
-        currentAuthority: 'user',
-      });
-      return;
-    }
     res.send({
-      status: 'error',
-      type,
+      code: 0,
+      msg:'用户名或密码错误',
+      // status: 'error',
+      // // type,
       currentAuthority: 'guest',
     });
   },
+
   'POST /api/register': (req, res) => {
-    res.send({ status: 'ok', currentAuthority: 'user' });
+    res.send({ code: 1, msg:'注册成功', currentAuthority: 'user' });
   },
+
   'GET /api/500': (req, res) => {
     res.status(500).send({
       timestamp: 1513932555104,

@@ -1,14 +1,16 @@
+/**
+ * 注册页面
+ */
+
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { formatMessage, FormattedMessage } from 'umi/locale';
 import Link from 'umi/link';
 import router from 'umi/router';
-import { Form, Input, Button, Select, Row, Col, Popover, Progress } from 'antd';
+import { Form, Input, Button, Popover, Progress } from 'antd';
 import styles from './Register.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const InputGroup = Input.Group;
 
 const passwordStatusMap = {
   ok: (
@@ -45,36 +47,6 @@ class Register extends Component {
     confirmDirty: false,
     visible: false,
     help: '',
-    prefix: '86',
-  };
-
-  componentDidUpdate() {
-    const { form, register } = this.props;
-    const account = form.getFieldValue('mail');
-    if (register.status === 'ok') {
-      router.push({
-        pathname: '/user/register-result',
-        state: {
-          account,
-        },
-      });
-    }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
-  }
-
-  onGetCaptcha = () => {
-    let count = 59;
-    this.setState({ count });
-    this.interval = setInterval(() => {
-      count -= 1;
-      this.setState({ count });
-      if (count === 0) {
-        clearInterval(this.interval);
-      }
-    }, 1000);
   };
 
   getPasswordStatus = () => {
@@ -89,27 +61,20 @@ class Register extends Component {
     return 'poor';
   };
 
+  // 注册事件
   handleSubmit = e => {
     e.preventDefault();
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
       if (!err) {
-        const { prefix } = this.state;
         dispatch({
           type: 'register/submit',
           payload: {
             ...values,
-            prefix,
           },
-        });
+        })
       }
     });
-  };
-
-  handleConfirmBlur = e => {
-    const { value } = e.target;
-    const { confirmDirty } = this.state;
-    this.setState({ confirmDirty: confirmDirty || !!value });
   };
 
   checkConfirm = (rule, value, callback) => {
@@ -150,12 +115,6 @@ class Register extends Component {
     }
   };
 
-  changePrefix = value => {
-    this.setState({
-      prefix: value,
-    });
-  };
-
   renderPasswordProgress = () => {
     const { form } = this.props;
     const value = form.getFieldValue('password');
@@ -176,7 +135,7 @@ class Register extends Component {
   render() {
     const { form, submitting } = this.props;
     const { getFieldDecorator } = form;
-    const { count, prefix, help, visible } = this.state;
+    const { help, visible } = this.state;
     return (
       <div className={styles.main}>
         <h3>

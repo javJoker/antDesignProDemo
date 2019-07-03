@@ -9,7 +9,7 @@ export default {
   namespace: 'login',
 
   state: {
-    status: undefined,
+    code: undefined,
   },
 
   effects: {
@@ -19,8 +19,9 @@ export default {
         type: 'changeLoginStatus',
         payload: response,
       });
+
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 1) {
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -70,8 +71,10 @@ export default {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
-        status: payload.status,
-        type: payload.type,
+        code: payload.code,
+        msg: payload.msg
+        // status: payload.status,
+        // type: payload.type,
       };
     },
   },
