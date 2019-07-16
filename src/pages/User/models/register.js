@@ -8,7 +8,7 @@ export default {
   namespace: 'register',
 
   state: {
-    code: undefined,
+
   },
 
   effects: {
@@ -37,8 +37,8 @@ export default {
       reloadAuthorized();
       return {
         ...state,
-        code: payload.code,
-        msg: payload.msg,
+        // code: payload.code,
+        // msg: payload.msg,
       };
     },
   },

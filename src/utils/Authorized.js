@@ -5,7 +5,8 @@ let Authorized = RenderAuthorized(getAuthority()); // eslint-disable-line
 
 // Reload the rights component
 const reloadAuthorized = () => {
-  Authorized = RenderAuthorized(getAuthority());
+  // FIXME
+  Authorized = RenderAuthorized(getAuthority('admin'));
 };
 
 export { reloadAuthorized };

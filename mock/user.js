@@ -73,9 +73,9 @@ export default {
     },
   ],
 
-  'POST /api/login/account': (req, res) => {
-    const { password, userName, type } = req.body;
-    if (password === 'admin' && userName === 'admin') {
+  'POST /oauth/do_oauth': (req, res) => {
+    const { password, userNo, type } = req.body;
+    if (password === 'admin' && userNo === 'admin') {
       res.send({
         code: 1,
         msg:'登录成功',

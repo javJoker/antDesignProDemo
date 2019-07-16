@@ -9,7 +9,7 @@ export default {
   namespace: 'login',
 
   state: {
-    code: undefined,
+
   },
 
   effects: {
@@ -22,6 +22,7 @@ export default {
 
       // Login successfully
       if (response.code === 1) {
+        // FIXME 权限问题
         reloadAuthorized();
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -71,8 +72,8 @@ export default {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
-        code: payload.code,
-        msg: payload.msg
+        // code: payload.code,
+        // msg: payload.msg
         // status: payload.status,
         // type: payload.type,
       };

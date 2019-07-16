@@ -103,15 +103,19 @@ export async function updateFakeList(params) {
   });
 }
 
+// 登录
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request('/oauth/do_oauth', {
     method: 'POST',
-    body: params,
+    body: {
+      ...params
+    },
   });
 }
 
+// 注册
 export async function fakeRegister(params) {
-  return request('/api/register', {
+  return request('/oauth/do_register', {
     method: 'POST',
     body: params,
   });

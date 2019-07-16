@@ -54,7 +54,7 @@ class LoginPage extends Component {
             {login.code === 0 && !submitting &&
               this.renderMessage(formatMessage({ id: 'app.login.message-invalid-credentials' }))}
             <UserName
-              name="userName"
+              name="userNo"
               placeholder={`${formatMessage({ id: 'app.login.userName' })}`}
               rules={[
                 {

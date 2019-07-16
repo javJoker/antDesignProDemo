@@ -66,6 +66,7 @@ class Register extends Component {
     e.preventDefault();
     const { form, dispatch } = this.props;
     form.validateFields({ force: true }, (err, values) => {
+      debugger
       if (!err) {
         dispatch({
           type: 'register/submit',
