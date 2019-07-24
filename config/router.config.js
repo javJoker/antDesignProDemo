@@ -255,9 +255,22 @@ export default [
           },
         ],
       },
+      // authority
+      {
+        name: 'authority',
+        icon: 'setting',
+        path: '/authority',
+        routes: [
+          {
+            path: '/authority/user',
+            name: 'user',
+            component: './Authority/User/ShowUserList',
+          },
+        ],
+      },
       {
         component: '404',
-      },
+      }
     ],
   },
 ];

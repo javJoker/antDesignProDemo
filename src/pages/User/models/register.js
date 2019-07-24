@@ -19,7 +19,7 @@ export default {
         payload: response,
       });
 
-      if (response.code === 1){
+      if (response.code === 200){
         // 页面跳转成功页
         router.push({
           pathname: '/user/login',
