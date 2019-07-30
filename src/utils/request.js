@@ -128,6 +128,12 @@ export default function request(url, option) {
         return response.text();
       }
       return response.json();
+    }).then( response => {
+      // 删除请求返回报文格式转化
+      if (newOptions.method === 'DELETE' || response.status === 204) {
+        return JSON.parse(response);
+      }
+      return  response;
     })
     .catch(e => {
       const status = e.name;

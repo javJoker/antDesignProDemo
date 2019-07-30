@@ -1,5 +1,4 @@
-import { queryRule, removeRule, addRule, updateRule } from '@/services/api';
-import { queryUser } from "@/services/authority";
+import { queryUser, removeUser } from "@/services/authority";
 import { message } from 'antd';
 
 export default {
@@ -37,14 +36,13 @@ export default {
     //   });
     //   if (callback) callback();
     // },
-    // *remove({ payload, callback }, { call, put }) {
-    //   const response = yield call(removeRule, payload);
-    //   yield put({
-    //     type: 'save',
-    //     payload: response,
-    //   });
-    //   if (callback) callback();
-    // },
+
+    // 删除
+    *remove({ payload, callback }, { call, put }) {
+      const response = yield call(removeUser, payload);
+
+      if (callback && typeof callback === 'function') callback(response);
+    },
     // *update({ payload, callback }, { call, put }) {
     //   const response = yield call(updateRule, payload);
     //   yield put({
@@ -59,7 +57,7 @@ export default {
     save(state, action) {
       return {
         ...state,
-        data: action.payload,
+        data: { ...action.payload},
       };
     },
   },
