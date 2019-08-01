@@ -1,4 +1,4 @@
-import { queryUser, removeUser } from "@/services/authority";
+import { queryUser, removeUser, submitUser } from "@/services/authority";
 import { message } from 'antd';
 
 export default {
@@ -28,14 +28,11 @@ export default {
 
     },
 
-    // *add({ payload, callback }, { call, put }) {
-    //   const response = yield call(addRule, payload);
-    //   yield put({
-    //     type: 'save',
-    //     payload: response,
-    //   });
-    //   if (callback) callback();
-    // },
+    *submit({ payload, callback }, { call, put }) {
+      const response = yield call(submitUser, payload);
+
+      if (callback && typeof callback === 'function') callback(response);
+    },
 
     // 删除
     *remove({ payload, callback }, { call, put }) {

@@ -12,5 +12,12 @@ export async function removeUser(params) {
     method: 'DELETE',
     body: { ...params},
   });
+}
 
+// 提交用户（添加和更新）
+export async function submitUser(params) {
+  return request(`/authority/user/submitUser`, {
+    method: 'POST',
+    body: { ...params},
+  });
 }

@@ -11,9 +11,8 @@ import {
   Icon,
   Menu,
   message,
-  Modal,
-  Divider,
   Input,
+  Modal,
 } from 'antd';
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -37,7 +36,7 @@ const getValue = (obj) =>
 class ShowUserList extends PureComponent {
   state = {
     modalVisible: false,                 // 新建、更新弹出框
-    modalTitle: null,                    // 新建、更新弹出框标题
+    current: {},                        // 新建、更新弹出框参数
     selectedRows: [],                    // 列表选中行
     formValues: {}                       // 筛选参数
   };
@@ -78,7 +77,7 @@ class ShowUserList extends PureComponent {
       title: '操作',
       render: (text, record) => (
         <Fragment>
-          <a onClick={() => this.handleModalVisible(true, '更新用户', record)}>更新</a>
+          <a onClick={() => this.handleModalVisible(true, record)}>更新</a>
           {/*<Divider type="vertical" />*/}
           {/*<a href="">订阅警报</a>*/}
         </Fragment>
@@ -95,11 +94,24 @@ class ShowUserList extends PureComponent {
   }
 
   // 新建弹出框弹出事件
-  handleModalVisible = (flag, title) => {
+  handleModalVisible = (flag, record) => {
+    const { dispatch } = this.props;
+
     this.setState({
       modalVisible: !!flag,
-      modalTitle: title,
+      current: record,
     })
+
+    // 判断弹出框关闭，当flag为false的时候，弹出框关闭
+    if ( !flag ){
+      let formValues = this.state.formValues;
+
+      dispatch({
+        type: 'authority/fetch',
+        payload: formValues,
+      });
+    }
+
   }
 
 
@@ -135,7 +147,12 @@ class ShowUserList extends PureComponent {
     }
 
     // 列表重新加载
-    this.handleSearch();
+    let formValues = this.state.formValues;
+
+    dispatch({
+      type: 'authority/fetch',
+      payload: formValues,
+    });
   }
 
   // 表单选中事件
@@ -147,7 +164,6 @@ class ShowUserList extends PureComponent {
 
   // 列表change事件
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    debugger
     const { dispatch } = this.props;
     const { formValues } = this.state;
 
@@ -177,23 +193,27 @@ class ShowUserList extends PureComponent {
     });
   };
 
-  // 弹出框确定按钮事件
-  okHandle = fields => {
+  // 提交事件
+  handleSubmit = fields => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/add',
-      payload: {
-        desc: fields.desc,
-      }
-    }).then({
+      type: 'authority/submit',
+      payload: { ...fields },
+      callback: ( response ) => {
+        if (response.code === 200){
+          message.success('添加成功');
+          this.handleModalVisible();
 
+        } else {
+          message.error(response.msg);
+        }
+      }
     });
-    message.success('添加成功');
-    this.handleModalVisible();
+
   };
 
   // 列表查询时间
-  handleSearch = e => {
+  handleSearch = (e) => {
     // 阻止元素发生默认的行为
     e.preventDefault();
 
@@ -218,6 +238,22 @@ class ShowUserList extends PureComponent {
     });
   };
 
+  // 重置时间
+  handleFormReset = () => {
+    const { form, dispatch } = this.props;
+
+    // 表单重置
+    form.resetFields();
+    this.setState({
+      formValues: {},
+    });
+
+    dispatch({
+      type: 'authority/fetch',
+      payload: {},
+    });
+  };
+
   // 筛选条件表单展示样式
   renderForm(){
     const {
@@ -238,7 +274,7 @@ class ShowUserList extends PureComponent {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <span>
+            <span className={styles.submitButtons}>
               <Button type="primary" htmlType="submit">
                 查询
               </Button>
@@ -258,7 +294,7 @@ class ShowUserList extends PureComponent {
       authority: { data },
       loading,
     } = this.props;
-    const { selectedRows, modalVisible, modalTitle, stepFormValues } = this.state;
+    const { current, selectedRows, modalVisible } = this.state;
 
     // 更多操作菜单
     const menu = (
@@ -269,43 +305,45 @@ class ShowUserList extends PureComponent {
 
     // 父类方法
     const parentMethods = {
-      okHandle: this.okHandle,
+      handleSubmit: this.handleSubmit,
       handleModalVisible: this.handleModalVisible,
     };
 
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
-          <div >
-            <div >{this.renderForm()}</div>
-            <div >
-              <div>
-                <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true, "新建用户")}>
-                  新建
-                </Button>
-                {selectedRows.length > 0 && (
-                  <span>
+          <div className={styles.tableList}>
+            <div className={styles.tableListForm}>{this.renderForm()}</div>
+            <div className={styles.tableListOperator}>
+              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true )}>
+                新建
+              </Button>
+              {selectedRows.length > 0 && (
+                <span>
                   <Dropdown overlay = { menu }>
                     <Button>
                       批量操作<Icon type="down" />
                     </Button>
                 </Dropdown>
               </span>
-                )}
-                <StandardTable
-                  selectedRows = {selectedRows}
-                  // loading = {loading}
-                  data = {data}
-                  columns = {this.columns}
-                  onSelectRow = {this.handleSelectRows}
-                  onChange = {this.handleStandardTableChange}
-                />
-              </div>
+              )}
             </div>
-
+            <StandardTable
+              selectedRows = {selectedRows}
+              // loading = {loading}
+              data = {data}
+              columns = {this.columns}
+              onSelectRow = {this.handleSelectRows}
+              onChange = {this.handleStandardTableChange}
+            />
           </div>
         </Card>
-        <OptUserForm {...parentMethods} modalVisible={ modalVisible } modalTitle={ modalTitle } />
+        <OptUserForm
+          {...parentMethods}
+          current = { current }
+          modalVisible = { modalVisible }
+          title = {`用户${current ? '编辑' : '添加'}`}
+        />
         {/*{*/}
           {/*stepFormValues && Object.keys( stepFormValues ).length ? (*/}
             {/*<UpdateForm*/}

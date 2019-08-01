@@ -5,6 +5,7 @@ let tableListDataSource = [];
 for (let i = 0; i < 46; i += 1) {
   tableListDataSource.push({
     key: i,
+    id: i,
     userNo: `test00${i}`,
     nickName: `Tom${i}`,
     realName: `小明${i}`,
@@ -13,6 +14,7 @@ for (let i = 0; i < 46; i += 1) {
     creator: `creator${i}`,
     createTime: new Date(`2017-07-${Math.floor(i / 2) + 1}`),
     delFlag: 1,
+    password: i,
   });
 }
 
@@ -85,48 +87,48 @@ function postUser(req, res, u, b) {
   }
 
   const body = (b && b.body) || req.body;
-  const { method, ids } = body;
+  const { method } = body;
 
   let method1 = method || req.method;
   switch (method1) {
     case 'DELETE':
+      const { ids } = body;
       tableListDataSource = tableListDataSource.filter(item => ids.indexOf(item.userNo) === -1);
       break;
-    // case 'post':
-    //   const i = Math.ceil(Math.random() * 10000);
-    //   tableListDataSource.unshift({
-    //     key: i,
-    //     href: 'https://ant.design',
-    //     avatar: [
-    //       'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
-    //       'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
-    //     ][i % 2],
-    //     name: `TradeCode ${i}`,
-    //     title: `一个任务名称 ${i}`,
-    //     owner: '曲丽丽',
-    //     desc,
-    //     callNo: Math.floor(Math.random() * 1000),
-    //     status: Math.floor(Math.random() * 10) % 2,
-    //     updatedAt: new Date(),
-    //     createdAt: new Date(),
-    //     progress: Math.ceil(Math.random() * 100),
-    //   });
-    //   break;
-    // case 'update':
-    //   tableListDataSource = tableListDataSource.map(item => {
-    //     if (item.key === key) {
-    //       Object.assign(item, { desc, name });
-    //       return item;
-    //     }
-    //     return item;
-    //   });
-    //   break;
+    case 'POST':
+      const { id, userNo, nickName, realName, password } = body;
+      // 更新
+      if (id){
+        tableListDataSource = tableListDataSource.map(item => {
+          if (item.key === key) {
+            Object.assign(item, { userNo, nickName, realName, password });
+            return item;
+          }
+          return item;
+        });
+      }else {
+        const i = Math.ceil(Math.random() * 10000);
+        tableListDataSource.unshift({
+          key: i,
+          id: i,
+          userNo:  userNo,
+          nickName: nickName,
+          realName: realName,
+          updator: `updator${i}`,
+          updateTime: new Date(`2017-07-${Math.floor(i / 2) + 1}`),
+          creator: `creator${i}`,
+          createTime: new Date(`2017-07-${Math.floor(i / 2) + 1}`),
+          delFlag: 1,
+          password: password,
+        });
+      }
+      break;
     default:
       break;
   }
 
   const result = {
-    code : 500,
+    code : 200,
     msg : '操作成功',
     data : {
       list: tableListDataSource,
@@ -143,4 +145,5 @@ function postUser(req, res, u, b) {
 export default {
   'GET /authority/user/queryUser' : getUser,
   'DELETE /authority/user/removeUser' : postUser,
+  'POST /authority/user/submitUser': postUser,
 }

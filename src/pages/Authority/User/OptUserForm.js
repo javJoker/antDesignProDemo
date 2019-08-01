@@ -1,5 +1,4 @@
 import React,{ PureComponent } from 'react';
-import { connect } from 'dva';
 import {
   Modal,
   Form,
@@ -12,50 +11,54 @@ const FormItem = Form.Item;
 class OptUserForm extends PureComponent{
 
   // 生命周期
-  componentWillMount() {
+  componentDidMount() {
 
   }
 
   render() {
 
-    const { form : { getFieldDecorator }, okHandle, handleModalVisible, modalVisible, modalTitle } = this.props;
-    // const { modalVisible } = this.state;
+    const {  form, handleSubmit, handleModalVisible, modalVisible, title, current } = this.props;
+
+    const okHandle = () => {
+      form.validateFields((err, fieldsValue) => {
+        if (err) return;
+
+        form.resetFields();
+        handleSubmit(fieldsValue);
+      });
+    };
 
     return (
       <Modal
         destroyOnClose={true}
-        title={ modalTitle }
+        title={ title }
         visible={ modalVisible }
         onOk={okHandle}
-        onCancel={() => handleModalVisible()}
+        onCancel={() => handleModalVisible( false )}
       >
         <Form layout = 'horizontal'>
           <FormItem label="用户编码">
-            {getFieldDecorator('userNo', {
-              rules: [
-
-              ],
+            {form.getFieldDecorator('userNo', {
+              rules: [],
+              initialValue: current ? current.userNo : null,
             })(<Input  />)}
           </FormItem>
           <FormItem label="用户昵称">
-            {getFieldDecorator('nickName', {
-              rules: [
-
-              ],
+            {form.getFieldDecorator('nickName', {
+              rules: [],
+              initialValue: current ? current.nickName : null,
             })(<Input  />)}
           </FormItem>
           <FormItem label="用户真名">
-            {getFieldDecorator('realName', {
-              rules: [
-
-              ],
+            {form.getFieldDecorator('realName', {
+              rules: [],
+              initialValue: current ? current.realName : null,
             })(<Input  />)}
           </FormItem>
           <FormItem label="登录密码">
-            {getFieldDecorator('password', {
-              rules: [
-
-              ],
+            {form.getFieldDecorator('password', {
+              rules: [],
+              initialValue: current ? current.password : null,
             })(<Input  />)}
           </FormItem>
         </Form>
