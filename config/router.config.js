@@ -266,6 +266,11 @@ export default [
             name: 'user',
             component: './Authority/User/ShowUserList',
           },
+          {
+            path: '/authority/menu',
+            name: 'menu',
+            component: './Authority/Menu/ShowMenuList',
+          },
         ],
       },
       {

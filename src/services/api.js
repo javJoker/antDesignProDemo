@@ -107,9 +107,10 @@ export async function updateFakeList(params) {
 export async function fakeAccountLogin(params) {
   return request('/oauth/do_oauth', {
     method: 'POST',
-    body: {
+    body:{
       ...params
-    },
+    }
+    ,
   });
 }
 
@@ -117,7 +118,9 @@ export async function fakeAccountLogin(params) {
 export async function fakeRegister(params) {
   return request('/oauth/do_register', {
     method: 'POST',
-    body: params,
+    body: {
+      ...params
+    },
   });
 }
 

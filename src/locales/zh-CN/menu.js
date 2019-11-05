@@ -38,4 +38,5 @@ export default {
 
   'menu.authority' : '权限管理',
   'menu.authority.user' : '用户管理',
+  'menu.authority.menu' : '菜单管理',
 };
